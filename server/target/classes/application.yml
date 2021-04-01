@@ -1,0 +1,110 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /springboot/messenger
+
+spring:
+
+  #多环境配置(dev、pro、test)
+  profiles:
+    active: dev
+
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  #Redis的配置
+  redis:
+    database: 0
+    host: 127.0.0.1
+    password:
+    port: 6379
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 150
+        min-idle: 100
+        max-wait: -1
+
+
+  #KFK配置
+  kafka:
+    #KFK集群
+    bootstrap-servers: localhost:9092
+
+    #初始化生产者配置
+    producer:
+      #重试次数
+      retries: 0
+      #应答级别：多少个分区副本备份完成时间向生产者发送ack确认(可选0 1 -1 all)
+      acks: 1
+      #批量大小
+      batch-size: 16384
+      #键的序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      #值得序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    #初始化消费者配置
+    consumer:
+      auto-commit-interval: 1s
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      #键的反序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #值得反序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: 0
+
+    #监听
+    listener:
+      #在监听器容器中运行的线程数
+      concurrency: 5
+      ack-count: 5
+      missing-topics-fatal: false
+
+
+  #发送邮件配置
+  mail:
+    host: smtp.163.com
+    username: m18208162387@163.com
+    password: GABYRPPAAGDGMHSV
+    port: 465
+    #设置为SSL协议
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+      from: m18208162387@163.com
+
+
+
+
+
+mybatis:
+
+  #扫描Mybatis的mapper.xml文件
+  mapper-locations: classpath:mappers/*.xml
+
+  #开启驼峰命名(数据库字段和实体属性匹配)
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+#设置redis的key和key的失效时间(使用StringRedisTemplate)
+redis:
+  employee:
+    info:
+      key: sb02:employee:info:key:%s
+      timeout: 1
+
+      #使用RedisTemplate(hash散列，一个大的键，然后值是一个map格式的键值对)
+      hash:
+        key: sb02:user:info:hash:key
+
